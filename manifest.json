@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "Failed Requests Monitor",
+    "version": "1.0",
+    "description": "Show failed network requests",
+    "permissions": [
+        "storage",
+        "tabs",
+        "scripting",
+        "webRequest"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Failed Requests",
+        "default_icon": {
+            "128": "icon_good.png"
+        }
+    }
+}

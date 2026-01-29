@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Failed Requests</title>
+    <link rel="stylesheet" href="popup.css" />
+</head>
+
+<body>
+    <div id="controls">
+        <input id="filter" placeholder="Filter URL or Error Type" />
+        <button id="clearBtn">Clear</button>
+    </div>
+
+    <div id="domain-view">
+        <div id="domain-list"></div>
+    </div>
+
+    <div id="detail-view" style="display: none;">
+        <div class="detail-header">
+            <button id="backBtn" title="Back">←</button>
+            <h2 id="domain-title"></h2>
+        </div>
+        <div id="request-list"></div>
+    </div>
+
+    <template id="domainItemTpl">
+        <div class="domain-item">
+            <div class="domain-info">
+                <span class="domain-name"></span>
+                <span class="count-badge"></span>
+            </div>
+            <div class="domain-actions">
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="itemTpl">
+        <div class="item">
+            <div class="row header">
+                <span class="method"></span>
+                <a class="url" target="_blank"></a>
+                <span class="time"></span>
+            </div>
+            <div class="row meta">
+                <span class="type"></span>
+                <span class="initiator"></span>
+                <span class="error"></span>
+            </div>
+            <div class="row actions">
+                <button class="copyUrl">Copy URL</button>
+                <button class="copyCurl">Copy Curl</button>
+                <button class="open">Open</button>
+                <button class="remove">Delete</button>
+            </div>
+        </div>
+    </template>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
