@@ -14,6 +14,7 @@ let currentTabId = null;
 let currentView = 'domain'; // 'domain' or 'detail'
 let selectedDomain = null;
 let allRecords = [];
+const MAX_URL_LENGTH = 80;
 
 // Get current active tabId
 function updateCurrentTabId(callback) {
@@ -27,6 +28,26 @@ function updateCurrentTabId(callback) {
 function formatTime(ts) {
     const d = new Date(ts);
     return d.toLocaleString();
+}
+
+function elideUrl(url) {
+    if (!url) return '';
+    if (url.length <= MAX_URL_LENGTH) return url;
+    return `${url.slice(0, MAX_URL_LENGTH - 1)}…`;
+}
+
+function setUrlDisplay(linkEl, toggleBtn, showFull) {
+    if (showFull) {
+        linkEl.textContent = linkEl.dataset.fullUrl || '';
+        linkEl.classList.remove('elided');
+        toggleBtn.textContent = 'Hide URL';
+        linkEl.dataset.isElided = 'false';
+    } else {
+        linkEl.textContent = elideUrl(linkEl.dataset.fullUrl || '');
+        linkEl.classList.add('elided');
+        toggleBtn.textContent = 'Show URL';
+        linkEl.dataset.isElided = 'true';
+    }
 }
 
 // Generate simple curl command
@@ -139,12 +160,18 @@ function renderDetailList() {
         const node = requestItemTpl.content.cloneNode(true);
         node.querySelector('.method').textContent = r.method;
         const a = node.querySelector('.url');
-        a.textContent = r.url;
+        a.dataset.fullUrl = r.url;
+        const toggleBtn = node.querySelector('.toggleUrl');
+        setUrlDisplay(a, toggleBtn, false);
         a.href = r.url;
         node.querySelector('.time').textContent = formatTime(r.time);
         node.querySelector('.type').textContent = r.type || '';
         node.querySelector('.initiator').textContent = r.initiator || '';
         node.querySelector('.error').textContent = r.error || '';
+        toggleBtn.addEventListener('click', () => {
+            const isElided = a.dataset.isElided === 'true';
+            setUrlDisplay(a, toggleBtn, isElided);
+        });
 
         // Copy URL
         node.querySelector('.copyUrl').addEventListener('click', async () => {

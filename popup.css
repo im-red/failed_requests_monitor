@@ -217,6 +217,14 @@ body {
     font-size: 12px;
 }
 
+.url.elided {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    word-break: normal;
+}
+
 .url:hover {
     text-decoration: underline;
 }

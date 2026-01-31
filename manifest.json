@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Failed Requests Monitor",
-    "version": "1.0",
+    "version": "0.1",
     "description": "Show failed network requests",
     "permissions": [
         "storage",
