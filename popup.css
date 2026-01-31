@@ -229,6 +229,26 @@ body {
     text-decoration: underline;
 }
 
+.url-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.toggleUrl {
+    color: #1890ff;
+    text-decoration: none;
+    font-size: 11px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.toggleUrl:hover {
+    text-decoration: underline;
+}
+
 .time {
     color: #999;
     font-size: 11px;

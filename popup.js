@@ -37,15 +37,24 @@ function elideUrl(url) {
 }
 
 function setUrlDisplay(linkEl, toggleBtn, showFull) {
-    if (showFull) {
-        linkEl.textContent = linkEl.dataset.fullUrl || '';
+    const fullUrl = linkEl.dataset.fullUrl || '';
+    if (fullUrl.length <= MAX_URL_LENGTH) {
+        linkEl.textContent = fullUrl;
         linkEl.classList.remove('elided');
-        toggleBtn.textContent = 'Hide URL';
+        toggleBtn.style.display = 'none';
+        linkEl.dataset.isElided = 'false';
+        return;
+    }
+    toggleBtn.style.display = 'inline';
+    if (showFull) {
+        linkEl.textContent = fullUrl;
+        linkEl.classList.remove('elided');
+        toggleBtn.textContent = 'Show less';
         linkEl.dataset.isElided = 'false';
     } else {
-        linkEl.textContent = elideUrl(linkEl.dataset.fullUrl || '');
+        linkEl.textContent = elideUrl(fullUrl);
         linkEl.classList.add('elided');
-        toggleBtn.textContent = 'Show URL';
+        toggleBtn.textContent = 'Show more';
         linkEl.dataset.isElided = 'true';
     }
 }
@@ -67,6 +76,10 @@ function getDomain(url) {
     } catch (e) {
         return 'Unknown';
     }
+}
+
+function getDomainSortKey(domain) {
+    return domain.toLowerCase().split('.').reverse().join('.');
 }
 
 function groupByDomain(records) {
@@ -101,8 +114,15 @@ function renderDomainList() {
     domainListEl.innerHTML = '';
 
     const groups = groupByDomain(allRecords);
-    // Sort domains by number of errors (descending)
-    const domains = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
+    const domains = Object.keys(groups).sort((a, b) => {
+        const keyA = getDomainSortKey(a);
+        const keyB = getDomainSortKey(b);
+        const keyCompare = keyA.localeCompare(keyB);
+        if (keyCompare !== 0) return keyCompare;
+        const countCompare = groups[b].length - groups[a].length;
+        if (countCompare !== 0) return countCompare;
+        return a.localeCompare(b);
+    });
 
     const q = filterInput.value.trim().toLowerCase();
 
@@ -168,7 +188,9 @@ function renderDetailList() {
         node.querySelector('.type').textContent = r.type || '';
         node.querySelector('.initiator').textContent = r.initiator || '';
         node.querySelector('.error').textContent = r.error || '';
-        toggleBtn.addEventListener('click', () => {
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleBtn.blur();
             const isElided = a.dataset.isElided === 'true';
             setUrlDisplay(a, toggleBtn, isElided);
         });
